@@ -57,6 +57,8 @@
     <string name="name">Name</string>
     <string name="profile_name">Profile Name</string>
     <string name="profile_url">Profile URL</string>
+    <string name="user_agent">User-Agent</string>
+    <string name="user_agent_hint">Leave empty to use the default User-Agent</string>
     <string name="auto_update">Auto Update</string>
     <string name="auto_update_minutes">Auto Update (Minutes)</string>
 

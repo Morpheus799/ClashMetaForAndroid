@@ -24,29 +24,29 @@ type ageKeyPair struct {
 }
 
 //export fetchAndValid
-func fetchAndValid(callback unsafe.Pointer, path, url C.c_string, force C.int) {
-	go func(path, url string, callback unsafe.Pointer) {
+func fetchAndValid(callback unsafe.Pointer, path, url C.c_string, force C.int, userAgent C.c_string) {
+	go func(path, url, userAgent string, callback unsafe.Pointer) {
 		cb := &remoteValidCallback{callback: callback}
 
-		err := config.FetchAndValid(path, url, force != 0, cb.reportStatus)
+		err := config.FetchAndValid(path, url, force != 0, userAgent, cb.reportStatus)
 
 		C.fetch_complete(callback, marshalString(err))
 
 		C.release_object(callback)
 
 		runtime.GC()
-	}(C.GoString(path), C.GoString(url), callback)
+	}(C.GoString(path), C.GoString(url), C.GoString(userAgent), callback)
 }
 
 //export load
-func load(completable unsafe.Pointer, path C.c_string) {
-	go func(path string) {
-		C.complete(completable, marshalString(config.Load(path)))
+func load(completable unsafe.Pointer, path C.c_string, userAgent C.c_string) {
+    go func(path, userAgent string) {
+        C.complete(completable, marshalString(config.Load(path, userAgent)))
 
-		C.release_object(completable)
+        C.release_object(completable)
 
-		runtime.GC()
-	}(C.GoString(path))
+        runtime.GC()
+    }(C.GoString(path), C.GoString(userAgent))
 }
 
 //export readOverride

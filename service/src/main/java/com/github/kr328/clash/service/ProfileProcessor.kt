@@ -48,7 +48,13 @@ object ProfileProcessor {
                 Clash.setAgeSecretKey(snapshot.ageSecretKey?.takeIf { it.isNotBlank() })
 
                 val force = snapshot.type != Profile.Type.File
-                val subscriptionInfo = fetchProfile(context, snapshot.source, force, callback)
+                val subscriptionInfo = fetchProfile(
+                    context,
+                    snapshot.source,
+                    force,
+                    snapshot.userAgent,
+                    callback
+                )
 
                 profileLock.withLock {
                     if (PendingDao().queryByUUID(snapshot.uuid) == snapshot) {
@@ -70,7 +76,8 @@ object ProfileProcessor {
                             subscriptionInfo?.subTotal ?: 0,
                             subscriptionInfo?.subExpire ?: 0,
                             old?.createdAt ?: System.currentTimeMillis(),
-                            ageSecretKey = snapshot.ageSecretKey
+                            ageSecretKey = snapshot.ageSecretKey,
+                            userAgent = snapshot.userAgent,
                         )
                         if (old != null) {
                             ImportedDao().update(new)
@@ -107,7 +114,13 @@ object ProfileProcessor {
 
                 Clash.setAgeSecretKey(snapshot.ageSecretKey?.takeIf { it.isNotBlank() })
 
-                val subscriptionInfo = fetchProfile(context, snapshot.source, true, callback)
+                val subscriptionInfo = fetchProfile(
+                    context,
+                    snapshot.source,
+                    true,
+                    snapshot.userAgent,
+                    callback
+                )
 
                 profileLock.withLock {
                     val imported = ImportedDao().queryByUUID(snapshot.uuid)
@@ -138,12 +151,13 @@ object ProfileProcessor {
         context: Context,
         source: String,
         force: Boolean,
+        userAgent: String?,
         callback: IFetchObserver?,
     ): FetchStatus? {
         var subscriptionInfo: FetchStatus? = null
         var cb = callback
 
-        Clash.fetchAndValid(context.processingDir, source, force) {
+        Clash.fetchAndValid(context.processingDir, source, force, userAgent.orEmpty()) {
             if (it.action == FetchStatus.Action.SubscriptionInfo) {
                 subscriptionInfo = it
                 return@fetchAndValid

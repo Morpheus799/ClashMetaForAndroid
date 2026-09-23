@@ -32,10 +32,15 @@ object Bridge {
         completable: FetchCallback,
         path: String,
         url: String,
-        force: Boolean
+        force: Boolean,
+        userAgent: String
     )
 
-    external fun nativeLoad(completable: CompletableDeferred<Unit>, path: String)
+    external fun nativeLoad(
+        completable: CompletableDeferred<Unit>,
+        path: String,
+        userAgent: String
+    )
     external fun nativeQueryProviders(): String
     external fun nativeUpdateProvider(
         completable: CompletableDeferred<Unit>,

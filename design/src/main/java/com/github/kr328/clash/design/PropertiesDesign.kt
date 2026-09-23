@@ -121,6 +121,24 @@ class PropertiesDesign(context: Context) : Design<PropertiesDesign.Request>(cont
         }
     }
 
+    fun inputUserAgent() {
+        if (profile.type == Profile.Type.File)
+            return
+
+        launch {
+            val userAgent = context.requestModelTextInput(
+                initial = profile.userAgent ?: "",
+                title = context.getText(R.string.user_agent),
+                hint = context.getText(R.string.user_agent_hint),
+            )
+
+            val newUserAgent = userAgent.ifBlank { null }
+            if (newUserAgent != profile.userAgent) {
+                profile = profile.copy(userAgent = newUserAgent)
+            }
+        }
+    }
+
     fun inputAgeSecretKey() {
         launch {
             val ageSecretKey = context.requestModelTextInput(

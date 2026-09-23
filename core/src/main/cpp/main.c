@@ -215,27 +215,31 @@ Java_com_github_kr328_clash_core_bridge_Bridge_nativePatchSelector(JNIEnv *env, 
 
 JNIEXPORT void JNICALL
 Java_com_github_kr328_clash_core_bridge_Bridge_nativeLoad(JNIEnv *env, jobject thiz,
-                                                          jobject completable, jstring path) {
+                                                          jobject completable, jstring path,
+                                                          jstring user_agent) {
     TRACE_METHOD();
 
     jobject _completable = new_global(completable);
     scoped_string _path = get_string(path);
+    scoped_string _user_agent = get_string(user_agent);
 
-    load(_completable, _path);
+    load(_completable, _path, _user_agent);
 }
 
 JNIEXPORT void JNICALL
 Java_com_github_kr328_clash_core_bridge_Bridge_nativeFetchAndValid(JNIEnv *env, jobject thiz,
                                                                     jobject callback,
                                                                     jstring path,
-                                                                    jstring url, jboolean force) {
+                                                                    jstring url, jboolean force,
+                                                                    jstring user_agent) {
     TRACE_METHOD();
 
     jobject _completable = new_global(callback);
     scoped_string _path = get_string(path);
     scoped_string _url = get_string(url);
+    scoped_string _user_agent = get_string(user_agent);
 
-    fetchAndValid(_completable, _path, _url, force);
+    fetchAndValid(_completable, _path, _url, force, _user_agent);
 }
 
 JNIEXPORT void JNICALL

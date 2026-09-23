@@ -78,7 +78,8 @@ class ProfileManager(private val context: Context) : IProfileManager,
             total = imported.total,
             download = imported.download,
             expire = imported.expire,
-            ageSecretKey = imported.ageSecretKey
+            ageSecretKey = imported.ageSecretKey,
+            userAgent = imported.userAgent,
         )
 
         cloneImportedFiles(uuid, newUUID)
@@ -88,7 +89,15 @@ class ProfileManager(private val context: Context) : IProfileManager,
         return newUUID
     }
 
-    override suspend fun patch(uuid: UUID, name: String, source: String, interval: Long, ageSecretKey: String?) {
+    override suspend fun patch(
+        uuid: UUID,
+        name: String,
+        source: String,
+        interval: Long,
+        ageSecretKey: String?,
+        userAgent: String?
+    ) {
+        val normalizedUserAgent = userAgent?.trim()?.takeIf { it.isNotEmpty() }
         val pending = PendingDao().queryByUUID(uuid)
 
         if (pending == null) {
@@ -109,6 +118,7 @@ class ProfileManager(private val context: Context) : IProfileManager,
                     download = 0,
                     expire = 0,
                     ageSecretKey = ageSecretKey,
+                    userAgent = normalizedUserAgent,
                 )
             )
         } else {
@@ -121,6 +131,7 @@ class ProfileManager(private val context: Context) : IProfileManager,
                 download = 0,
                 expire = 0,
                 ageSecretKey = ageSecretKey,
+                userAgent = normalizedUserAgent,
             )
 
             PendingDao().update(newPending)
@@ -204,6 +215,7 @@ class ProfileManager(private val context: Context) : IProfileManager,
             imported = imported != null,
             pending = pending != null,
             ageSecretKey = if (pending != null) pending.ageSecretKey else imported?.ageSecretKey,
+            userAgent = if (pending != null) pending.userAgent else imported?.userAgent,
         )
     }
 

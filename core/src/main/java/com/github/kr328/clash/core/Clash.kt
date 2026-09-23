@@ -137,6 +137,7 @@ object Clash {
         path: File,
         url: String,
         force: Boolean,
+        userAgent: String,
         reportStatus: (FetchStatus) -> Unit
     ): CompletableDeferred<Unit> {
         return CompletableDeferred<Unit>().apply {
@@ -160,14 +161,15 @@ object Clash {
                 },
                 path.absolutePath,
                 url,
-                force
+                force,
+                userAgent
             )
         }
     }
 
-    fun load(path: File): CompletableDeferred<Unit> {
+    fun load(path: File, userAgent: String): CompletableDeferred<Unit> {
         return CompletableDeferred<Unit>().apply {
-            Bridge.nativeLoad(this, path.absolutePath)
+            Bridge.nativeLoad(this, path.absolutePath, userAgent)
         }
     }
 

@@ -57,6 +57,8 @@
     <string name="ok">确认</string>
     <string name="profile">配置</string>
     <string name="profile_name">配置名称</string>
+    <string name="user_agent">User-Agent</string>
+    <string name="user_agent_hint">留空使用默认 User-Agent</string>
     <string name="profiles">配置</string>
     <string name="properties">参数</string>
     <string name="proxy">代理</string>

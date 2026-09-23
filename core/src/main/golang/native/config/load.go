@@ -58,12 +58,16 @@ func Parse(rawConfig *config.RawConfig) (*config.Config, error) {
 	return cfg, nil
 }
 
-func Load(path string) error {
+func Load(path string, userAgent string) error {
 	rawCfg, err := UnmarshalAndPatch(path)
 	if err != nil {
 		log.Errorln("Load %s: %s", path, err.Error())
 
 		return err
+	}
+
+	if userAgent = strings.TrimSpace(userAgent); userAgent != "" {
+		rawCfg.GlobalUA = userAgent
 	}
 
 	logDns(rawCfg)

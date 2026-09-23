@@ -57,7 +57,10 @@ class ConfigurationModule(service: Service) : Module<ConfigurationModule.LoadExc
 
                 Clash.setAgeSecretKey(active.ageSecretKey?.takeIf { it.isNotBlank() })
 
-                Clash.load(service.importedDir.resolve(active.uuid.toString())).await()
+                Clash.load(
+                    service.importedDir.resolve(active.uuid.toString()),
+                    active.userAgent.orEmpty()
+                ).await()
 
                 val remove = SelectionDao().querySelections(active.uuid)
                     .filterNot { Clash.patchSelector(it.proxy, it.selected) }
